@@ -6,7 +6,7 @@ import SidebarLogo from "./SidebarLogo";
 import SidebarItem from "./SidebarItem";
 import SidebarTweetButton from "./SidebarTweetButton";
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
 	// Define an array of objects representing each item in the sidebar. Each object
 	// has a label, href, and icon property.
 	const items = [
