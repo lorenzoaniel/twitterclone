@@ -28,10 +28,10 @@ const loginModalSlice = createSlice({
 });
 
 // Export the action creators for the "handleOpen" and "handleClose" actions.
-export const { handleOpen, handleClose } = loginModalSlice.actions;
+export const loginModalReducer = loginModalSlice.actions;
 
 // Export a selector function that selects the loginModal slice from the Redux store.
-export const selectLoginModal = (state: RootState) => state.loginModal;
+export const loginModalState = (state: RootState) => state.loginModal;
 
 // Export the reducer function for the loginModal slice.
 export default loginModalSlice.reducer;
