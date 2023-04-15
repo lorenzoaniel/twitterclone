@@ -1,0 +1,89 @@
+// Generator block for generating a Prisma Client that can be used to interact with the database
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Datasource block for defining the database connection information
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Model for the User data
+model User {
+  // Primary key for the User model
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  // Nullable fields for User model
+  name String?
+  username String?
+  bio String?
+  email String? @unique
+  emailVerified DateTime?
+  image String? //used for NextAuth session, profile image can be quite large and can break session 
+  coverImage String?
+  profileImage String? //this is what we will actually use
+  hashedPassword String?
+  // Fields for tracking creation and modification timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // Array of User ids that this User is following
+  followingIds String[] @db.ObjectId
+  // Boolean indicating whether the User has new notifications
+  hasNotification Boolean?
+  // Relationships with other models
+  posts Post[]
+  comments Comment[]
+  notifications Notification[]
+}
+
+// Model for the Post data
+model Post {
+  // Primary key for the Post model
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  // Body of the post
+  body String
+  // Fields for tracking creation and modification timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // Id of the User who created this post
+  userId String @db.ObjectId
+  // Array of User ids who liked this post
+  likedIds String[] @db.ObjectId
+  // Relationship with the User who created this post
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Relationship with the Comment model
+  comments Comment[]
+}
+
+// Model for the Comment data
+model Comment {
+  // Primary key for the Comment model
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  // Body of the comment
+  body String
+  // Fields for tracking creation and modification timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // Id of the User who created this comment
+  userId String @db.ObjectId
+  // Id of the Post that this comment belongs to
+  postId String @db.ObjectId
+  // Relationship with the User who created this comment
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Relationship with the Post model
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+// Model for the Notification data
+model Notification {
+  // Primary key for the Notification model
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  // Body of the notification
+  body String
+  // Id of the User who received this notification
+  userId String @db.ObjectId
+  // Fields for tracking creation timestamps
+  createdAt DateTime @default(now())
+  // Relationship with the User who received this notification
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
